@@ -8,3 +8,8 @@ group :test do
   gem "rspec"
   gem "guard-rspec"
 end
+
+group :osx do
+  gem 'rb-fsevent'
+  gem 'growl'
+end
