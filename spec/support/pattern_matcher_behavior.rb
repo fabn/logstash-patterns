@@ -19,7 +19,7 @@ end
 
 # @param [String] pattern the pattern under test
 # @param [Array<String>] matching a list of matching patterns
-# @param [Array<String>] not_matching a list of not matching patterns
+# @param [Array<String>, nil] not_matching a list of not matching patterns
 shared_examples "a grok pattern matcher" do |pattern, matching, not_matching|
 
   let(:pattern) { pattern }
@@ -31,7 +31,7 @@ shared_examples "a grok pattern matcher" do |pattern, matching, not_matching|
     end
   end
 
-  not_matching.each do |match|
+  not_matching.to_a.each do |match|
     it "should not match \"#{match}\" (against \"#{pattern}\")" do
       grok.match(match).should_not be_a Grok::Match
     end
