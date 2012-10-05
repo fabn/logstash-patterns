@@ -10,4 +10,4 @@ STATUS sent|deferred|bounced|expired
 PERMERROR 5[0-9]{2}
 RESPONSE %{DATA}
 COMMAND %{DATA}
-POSTFIXSMTPLOG %{SYSLOGBASE2} %{QUEUEID}: to=%{ADDRESS:to}, relay=%{RELAY:relay}, delay=%{POSREAL:delay}, delays=%{DELAYS}, dsn=%{DSN}, status=%{STATUS} \(%{DATA:reason}\)
+POSTFIXSMTPLOG %{SYSLOGBASE2} %{QUEUEID}: to=%{ADDRESS:to}, relay=%{RELAY:relay}, delay=%{POSREAL:delay}, delays=%{DELAYS}, dsn=%{DSN}, status=%{STATUS:status} \(%{DATA:reason}\)
