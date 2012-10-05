@@ -91,4 +91,20 @@ describe "postfix grok patterns" do
 
   end
 
+  describe "Postfix smtp edge cases logs extracted from real logfiles" do
+
+    with_custom_relay = with_original_to = "Oct  2 15:01:01 hostname postfix/pipe[12386]: E8C9B11EFEC: to=<dyyyy@example.org>, orig_to=<dxxxx@example.org>, relay=custom, delay=1, delays=0.01/0/0/1, dsn=2.0.0, status=sent (delivered via custom service)"
+    with_conn_use = "Oct  2 00:36:33 hostname postfix/smtp[23733]: 2111411F0D1: to=<jxxxx@cxxxxx.net>, relay=mx2.cxxxx.net[76.22.22.22]:25, conn_use=2, delay=5706, delays=5671/30/0.12/5.2, dsn=2.0.0, status=sent (250 2.0.0 64cP1k0015SCSiQ064cU6t mail accepted for delivery)"
+    dunno_why = "Oct  2 20:47:23 hostname postfix/smtp[7463]: 81F2411EE44: to=<wxxxxxx@sxxxxxx.org.br>, relay=cor.sxxxx.org.br[189.22.22.22]:25, delay=14, delays=7.1/0.1/1.4/5.5, dsn=2.6.0, status=sent (250 2.6.0 <dxxx@anonymous> [InternalId=244401] Queued mail for delivery)"
+
+    it_should_behave_like "a grok pattern matcher", "%{POSTFIXSMTPLOG}", [
+        with_original_to, with_custom_relay, with_conn_use, dunno_why
+    ]
+
+    it_should_behave_like "a grok field matcher", "%{POSTFIXSMTPLOG}", with_original_to, {original_to: '<dxxxx@example.org>'}
+
+    it_should_behave_like "a grok field matcher", "%{POSTFIXSMTPLOG}", with_custom_relay, {relay: 'custom'}
+
+  end
+
 end
