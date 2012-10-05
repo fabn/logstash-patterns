@@ -29,3 +29,41 @@ shared_examples "a grok pattern matcher for" do |pattern, matching, not_matching
   end
 
 end
+
+# @param [String] pattern the pattern under test
+# @param [String] example the string to match
+# @param [Hash,Array] fields an hash of expected matched fields
+shared_examples "a grok field matcher for" do |pattern, example, fields|
+
+  # Grok instance
+  let(:grok) { Grok.new }
+
+  before :each do
+    # add grok patterns
+    Dir['grok-patterns/*'].each do |pattern_file|
+      grok.add_patterns_from_file(pattern_file)
+    end
+    # Add tested pattern file
+    grok.add_patterns_from_file(tested_pattern_file) if respond_to?(:tested_pattern_file)
+  end
+
+  case fields
+    when Array
+      fields.each do |field|
+        it "should match field #{field} for #{example}" do
+          grok.compile(pattern)
+          grok.match(example).should have_logstash_field(field)
+        end
+      end
+    when Hash
+      fields.each do |field, value|
+        it "should match field #{field} with #{value} for #{example}" do
+          grok.compile(pattern)
+          grok.match(example).should have_logstash_field(field).with_value(value)
+        end
+      end
+    else
+      # ignore the example
+  end
+
+end
