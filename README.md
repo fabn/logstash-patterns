@@ -6,13 +6,11 @@ repo is me starting to collect useful patterns. Currently this
 repository contains patterns for:
 
 * [Lograge](https://github.com/roidrage/lograge) - making Rails logs suck less
+* [Postfix STMP](http://www.postfix.org/) - Analyze postfix SMTP entries, (original version credits: https://gist.github.com/be1b531485eaca695ab7)
 
 ## Tests
 
-[![Build
-Status](https://secure.travis-ci.org/garethr/logstash-patterns.png)](http://travis-ci.org/garethr/logstash-patterns)
-[![Dependency
-Status](https://gemnasium.com/garethr/logstash-patterns.png)](http://gemnasium.com/garethr/logstash-patterns)
+[![Build Status](https://secure.travis-ci.org/fabn/logstash-patterns.png)](http://travis-ci.org/fabn/logstash-patterns)
 
 As well as being a set of patterns for people to use in logstash, this
 repo also contains test suites for those patterns and a rspec matcher
@@ -20,6 +18,11 @@ that might be useful to anyone else who wants to write and test grok
 patterns. You can run the test suite with:
 
     bundle install
+    bundle exec rake
+
+To run specs on non osx platforms please run
+
+    bundle install --without osx
     bundle exec rake
 
 ## Contributing
