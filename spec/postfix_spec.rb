@@ -63,6 +63,42 @@ describe "postfix grok patterns" do
 
   end
 
+  describe "%{POSTFIX_CONNECT_ERROR}" do
+
+    smtp_connect_error = "connect to axxx-xx.com[208.22.22.22]:25: Connection refused"
+
+    it_should_behave_like "a grok pattern matcher", description, [smtp_connect_error]
+
+    it_should_behave_like "a grok field matcher", description, smtp_connect_error,
+                          {ip: '208.22.22.22', port: '25', reason: "Connection refused"}
+
+  end
+
+  describe "%{POSTFIX_LOST_CONNECTION}" do
+
+    lost_connection_error = "7587E11F91A: lost connection with mxx.xxx.net[213.22.22.22] while sending DATA command"
+
+    it_should_behave_like "a grok pattern matcher", description, [lost_connection_error]
+
+    it_should_behave_like "a grok field matcher", description, lost_connection_error,
+                          {queue_id: '7587E11F91A', ip: '213.22.22.22', hostname: 'mxx.xxx.net', while: "sending DATA command"}
+
+  end
+
+  describe "%{POSTFIX_HOST_REFUSED}" do
+
+    host_refused_error = "AFBB511F85A: host smtp.nxx.fr[93.22.22.22] refused to talk to me: 554 5.7.1 <mxxx.xxxx.org[144.22.22.22]>: Client host rejected: Abus detecte GU_EIB_02"
+
+    it_should_behave_like "a grok pattern matcher", description, [host_refused_error]
+
+    it_should_behave_like "a grok field matcher", description, host_refused_error,
+                          {
+                              queue_id: 'AFBB511F85A', ip: '93.22.22.22', hostname: 'smtp.nxx.fr',
+                              reason: "554 5.7.1 <mxxx.xxxx.org[144.22.22.22]>: Client host rejected: Abus detecte GU_EIB_02"
+                          }
+
+  end
+
   describe "a whole logline should match POSTFIXSMTPLOG" do
 
     # Real log lines with masked ip and email addresses, used as sample data
@@ -86,24 +122,24 @@ describe "postfix grok patterns" do
                               to: '<dnxxxxx@fxxxxxx.fm>', relay: 'in1-smtp.mxxxxx.com[66.22.22.22]:25',
                               ip: '66.22.22.22', port: '25',
                               delay: '51738', status: 'deferred',
-                              reason: 'host in1-smtp.mxxxxxxx.com[66.22.22.22] said: 451 4.7.1 <dnxxxxxx@fxxxxx.fm>: Recipient address rejected: User is over quota, try again later (in reply to RCPT TO command'
+                              reason: 'host in1-smtp.mxxxxxxx.com[66.22.22.22] said: 451 4.7.1 <dnxxxxxx@fxxxxx.fm>: Recipient address rejected: User is over quota, try again later (in reply to RCPT TO command)'
                           }
 
   end
 
   describe "Postfix smtp edge cases logs extracted from real logfiles" do
 
-    with_custom_relay = with_original_to = "Oct  2 15:01:01 hostname postfix/pipe[12386]: E8C9B11EFEC: to=<dyyyy@example.org>, orig_to=<dxxxx@example.org>, relay=custom, delay=1, delays=0.01/0/0/1, dsn=2.0.0, status=sent (delivered via custom service)"
-    with_conn_use = "Oct  2 00:36:33 hostname postfix/smtp[23733]: 2111411F0D1: to=<jxxxx@cxxxxx.net>, relay=mx2.cxxxx.net[76.22.22.22]:25, conn_use=2, delay=5706, delays=5671/30/0.12/5.2, dsn=2.0.0, status=sent (250 2.0.0 64cP1k0015SCSiQ064cU6t mail accepted for delivery)"
-    dunno_why = "Oct  2 20:47:23 hostname postfix/smtp[7463]: 81F2411EE44: to=<wxxxxxx@sxxxxxx.org.br>, relay=cor.sxxxx.org.br[189.22.22.22]:25, delay=14, delays=7.1/0.1/1.4/5.5, dsn=2.6.0, status=sent (250 2.6.0 <dxxx@anonymous> [InternalId=244401] Queued mail for delivery)"
+    with_custom_relay = with_original_to = "E8C9B11EFEC: to=<dyyyy@example.org>, orig_to=<dxxxx@example.org>, relay=custom, delay=1, delays=0.01/0/0/1, dsn=2.0.0, status=sent (delivered via custom service)"
+    with_conn_use = "2111411F0D1: to=<jxxxx@cxxxxx.net>, relay=mx2.cxxxx.net[76.22.22.22]:25, conn_use=2, delay=5706, delays=5671/30/0.12/5.2, dsn=2.0.0, status=sent (250 2.0.0 64cP1k0015SCSiQ064cU6t mail accepted for delivery)"
+    dunno_why = "81F2411EE44: to=<wxxxxxx@sxxxxxx.org.br>, relay=cor.sxxxx.org.br[189.22.22.22]:25, delay=14, delays=7.1/0.1/1.4/5.5, dsn=2.6.0, status=sent (250 2.6.0 <dxxx@anonymous> [InternalId=244401] Queued mail for delivery)"
 
-    it_should_behave_like "a grok pattern matcher", "%{POSTFIXSMTPLOG}", [
+    it_should_behave_like "a grok pattern matcher", "%{POSTFIX_SMTP_LOG}", [
         with_original_to, with_custom_relay, with_conn_use, dunno_why
     ]
 
-    it_should_behave_like "a grok field matcher", "%{POSTFIXSMTPLOG}", with_original_to, {original_to: '<dxxxx@example.org>'}
+    it_should_behave_like "a grok field matcher", "%{POSTFIX_SMTP_LOG}", with_original_to, {original_to: '<dxxxx@example.org>'}
 
-    it_should_behave_like "a grok field matcher", "%{POSTFIXSMTPLOG}", with_custom_relay, {relay: 'custom'}
+    it_should_behave_like "a grok field matcher", "%{POSTFIX_SMTP_LOG}", with_custom_relay, {relay: 'custom'}
 
   end
 

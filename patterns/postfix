@@ -10,4 +10,10 @@ STATUS sent|deferred|bounced|expired
 PERMERROR 5[0-9]{2}
 RESPONSE %{DATA}
 COMMAND %{DATA}
-POSTFIXSMTPLOG %{SYSLOGBASE2} %{QUEUEID}: to=%{ADDRESS:to},( orig_to=%{ADDRESS:original_to},)? relay=%{RELAY:relay},( conn_use=%{POSINT+},)? delay=%{POSREAL:delay}, delays=%{DELAYS}, dsn=%{DSN}, status=%{STATUS:status} \(%{DATA:reason}\)
+# Postfix message types
+POSTFIX_CONNECT_ERROR connect to %{RELAY:relay}: %{DATA:reason}$
+POSTFIX_LOST_CONNECTION %{QUEUEID:queue_id}: lost connection with (?:%{HOSTNAME:hostname}(?:\[%{IP:ip}\])) while %{DATA:while}$
+POSTFIX_HOST_REFUSED %{QUEUEID:queue_id}: host (?:%{HOSTNAME:hostname}(?:\[%{IP:ip}\])) refused to talk to me: %{DATA:reason}$
+POSTFIX_SMTP_LOG %{QUEUEID:queue_id}: to=%{ADDRESS:to},( orig_to=%{ADDRESS:original_to},)? relay=%{RELAY:relay},( conn_use=%{POSINT+},)? delay=%{POSREAL:delay}, delays=%{DELAYS}, dsn=%{DSN}, status=%{STATUS:status} \(%{DATA:reason}\)$
+# Postfix smtp generic matcher
+POSTFIXSMTPLOG %{SYSLOGBASE2} %{POSTFIX_SMTP_LOG}|%{POSTFIX_CONNECT_ERROR}|%{POSTFIX_LOST_CONNECTION}|%{POSTFIX_HOST_REFUSED}
