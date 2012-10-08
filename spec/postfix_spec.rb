@@ -99,6 +99,23 @@ describe "postfix grok patterns" do
 
   end
 
+  describe "%{POSTFIX_SMTP_WARNING}" do
+
+    warning_messages = [
+        "warning: no MX host for spxxx.com has a valid address record",
+        "warning: numeric domain name in resource data of MX record for cxxx.net: 200.22.22.22",
+        "warning: malformed domain name in resource data of MX record for sxxxx.sxxxxx.org:"
+    ]
+
+    it_should_behave_like "a grok pattern matcher", description, warning_messages
+
+    it_should_behave_like "a grok field matcher", description, warning_messages.first,
+                          {
+                              warning: "no MX host for spxxx.com has a valid address record"
+                          }
+
+  end
+
   describe "a whole logline should match POSTFIXSMTPLOG" do
 
     # Real log lines with masked ip and email addresses, used as sample data
