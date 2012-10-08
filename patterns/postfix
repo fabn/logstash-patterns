@@ -2,7 +2,7 @@
 QUEUEID (?:[A-F0-9]+|NOQUEUE)
 ADDRESSPART [a-zA-Z0-9_.+-]+
 ADDRESS <%{ADDRESSPART:local}@%{ADDRESSPART:remote}>
-RELAY (?:%{HOSTNAME}(?:\[%{IP:ip}\]:%{POSREAL:port})|none|\w+)
+RELAY (?:%{HOSTNAME}(?:\[%{IP:ip}\]:%{POSREAL:port})|none|%{WORD})
 POSREAL [0-9]+(.[0-9]+)?
 DELAYS %{POSREAL:a}/%{POSREAL:b}/%{POSREAL:c}/%{POSREAL:d}
 DSN %{POSINT}.%{INT}.%{INT}

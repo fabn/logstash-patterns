@@ -30,7 +30,7 @@ describe "postfix grok patterns" do
   describe "%{RELAY}" do
 
     it_should_behave_like "a grok pattern matcher", description,
-                          %w(none
+                          %w(none custom
                           alt1.aspmx.l.google.com[173.194.73.27]:25
                           mta5.am0.yahoodns.net[98.136.216.26]:25)
 
