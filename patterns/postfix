@@ -10,10 +10,16 @@ STATUS sent|deferred|bounced|expired
 PERMERROR 5[0-9]{2}
 RESPONSE %{DATA}
 COMMAND %{DATA}
+# Partials
+SMTP_ERROR_CODE %{INT}{3}
+POSTFIX_HOSTNAME (?:%{HOSTNAME:hostname}(?:\[%{IP:ip}\]))
+# in the following google smtp's uses dash as separator
+SMTP_SAID_MESSAGE %{SMTP_ERROR_CODE:smtp_error_code}((-| )%{DSN:dsn})? %{DATA:reason}
 # Postfix message types
 POSTFIX_CONNECT_ERROR connect to %{RELAY:relay}: %{DATA:reason}$
 POSTFIX_LOST_CONNECTION %{QUEUEID:queue_id}: lost connection with (?:%{HOSTNAME:hostname}(?:\[%{IP:ip}\])) while %{DATA:while}$
 POSTFIX_HOST_REFUSED %{QUEUEID:queue_id}: host (?:%{HOSTNAME:hostname}(?:\[%{IP:ip}\])) refused to talk to me: %{DATA:reason}$
+POSTFIX_HOST_SAID %{QUEUEID:queue_id}: host %{POSTFIX_HOSTNAME} said: %{SMTP_SAID_MESSAGE:host_message}$
 POSTFIX_SMTP_WARNING warning: %{DATA:warning}$
 POSTFIX_SMTP_LOG %{QUEUEID:queue_id}: to=%{ADDRESS:to},( orig_to=%{ADDRESS:original_to},)? relay=%{RELAY:relay},( conn_use=%{POSINT+},)? delay=%{POSREAL:delay}, delays=%{DELAYS}, dsn=%{DSN}, status=%{STATUS:status} \(%{DATA:reason}\)$
 # Postfix smtp generic matcher

@@ -99,6 +99,47 @@ describe "postfix grok patterns" do
 
   end
 
+  describe "%{SMTP_SAID_MESSAGE}" do
+
+    messages = [
+        "452-4.2.2 The email account that you tried to reach is over quota. Please direct 452-4.2.2 the recipient to 452 4.2.2 http://support.google.com/mail/bin/answer.py?answer=6558 v4si727563qct.119 (in reply to RCPT TO command)",
+        "450 4.1.1 <lxxxx@gxxxx.gt>...  <lxxxx@gxxxx.gt>: Recipient address rejected: User unknown in local recipient table (in reply to RCPT TO command)",
+        "456 Address temporarily unavailable. (in reply to RCPT TO command)",
+        "450 <cxxxx@ixxxx.com>: Recipient address rejected: undeliverable address: host 81.22.22.22[81.22.22.22] said: 550 sorry, no mailbox here by that name. (#5.7.17) (in reply to RCPT TO command) (in reply to RCPT TO command)",
+        "451 Temporary local problem - please try later (in reply to RCPT TO command)"
+    ]
+
+    it_should_behave_like "a grok pattern matcher", description, messages
+
+    it_should_behave_like "a grok field matcher", description, messages[0],
+                          {
+                              smtp_error_code: '452', dsn: '4.2.2'
+                          }
+
+    it_should_behave_like "a grok field matcher", description, messages[1],
+                          {
+                              smtp_error_code: '450', dsn: '4.1.1'
+                          }
+
+  end
+
+  describe "%{POSTFIX_HOST_SAID}" do
+
+    host_said_errors = [
+        "865963CD3E: host gmail-smtp-in.l.google.com[173.194.76.26] said: 452-4.2.2 The email account that you tried to reach is over quota. Please direct 452-4.2.2 the recipient to 452 4.2.2 http://support.google.com/mail/bin/answer.py?answer=6558 v4si727563qct.119 (in reply to RCPT TO command)",
+        "818273CEAC: host mail5.gxxxx.gt[200.22.22.22] said: 450 4.1.1 <lxxxx@gxxxx.gt>...  <lxxxx@gxxxx.gt>: Recipient address rejected: User unknown in local recipient table (in reply to RCPT TO command)"
+    ]
+
+    it_should_behave_like "a grok pattern matcher", description, host_said_errors
+
+    it_should_behave_like "a grok field matcher", description, host_said_errors.first,
+                          {
+                              queue_id: '865963CD3E', ip: '173.194.76.26', hostname: 'gmail-smtp-in.l.google.com',
+                              smtp_error_code: '452', dsn: '4.2.2'
+                          }
+
+  end
+
   describe "%{POSTFIX_SMTP_WARNING}" do
 
     warning_messages = [
