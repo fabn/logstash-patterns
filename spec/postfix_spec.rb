@@ -179,7 +179,7 @@ describe "postfix grok patterns" do
                           {
                               to: '<dnxxxxx@fxxxxxx.fm>', relay: 'in1-smtp.mxxxxx.com[66.22.22.22]:25',
                               ip: '66.22.22.22', port: '25',
-                              delay: '51738', status: 'deferred',
+                              delay: '51738', status: 'deferred', dsn: '4.7.1',
                               reason: 'host in1-smtp.mxxxxxxx.com[66.22.22.22] said: 451 4.7.1 <dnxxxxxx@fxxxxx.fm>: Recipient address rejected: User is over quota, try again later (in reply to RCPT TO command)'
                           }
 

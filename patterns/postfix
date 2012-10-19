@@ -21,6 +21,6 @@ POSTFIX_LOST_CONNECTION %{QUEUEID:queue_id}: lost connection with %{POSTFIX_HOST
 POSTFIX_HOST_REFUSED %{QUEUEID:queue_id}: host %{POSTFIX_HOSTNAME} refused to talk to me: %{DATA:reason}$
 POSTFIX_HOST_SAID %{QUEUEID:queue_id}: host %{POSTFIX_HOSTNAME} said: %{SMTP_SAID_MESSAGE:host_message}$
 POSTFIX_SMTP_WARNING warning: %{DATA:warning}$
-POSTFIX_SMTP_LOG %{QUEUEID:queue_id}: to=%{ADDRESS:to},( orig_to=%{ADDRESS:original_to},)? relay=%{RELAY:relay},( conn_use=%{POSINT+},)? delay=%{POSREAL:delay:float}, delays=%{DELAYS}, dsn=%{DSN}, status=%{STATUS:status} \(%{DATA:reason}\)$
+POSTFIX_SMTP_LOG %{QUEUEID:queue_id}: to=%{ADDRESS:to},( orig_to=%{ADDRESS:original_to},)? relay=%{RELAY:relay},( conn_use=%{POSINT+},)? delay=%{POSREAL:delay:float}, delays=%{DELAYS}, dsn=%{DSN:dsn}, status=%{STATUS:status} \(%{DATA:reason}\)$
 # Postfix smtp generic matcher
 POSTFIXSMTPLOG %{SYSLOGBASE2} %{POSTFIX_SMTP_LOG}|%{POSTFIX_CONNECT_ERROR}|%{POSTFIX_LOST_CONNECTION}|%{POSTFIX_HOST_REFUSED}|%{POSTFIX_HOST_SAID}|%{POSTFIX_SMTP_WARNING}
