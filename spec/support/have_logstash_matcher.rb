@@ -7,7 +7,7 @@ RSpec::Matchers.define :have_logstash_field do |field|
     # avoid running the assertion on non matching data
     grok_match.should be_a Grok::Match
     grok_captures = grok_match.captures()
-    grok_field = grok_captures.keys.grep(/.*:#{field}$/)
+    grok_field = grok_captures.keys.grep(/.*:#{field}(:.*)?$/)
     if @value
       grok_captures[grok_field.first].first.should == @value
     else
