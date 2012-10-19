@@ -16,8 +16,12 @@ describe "postfix grok patterns" do
   describe "%{ADDRESS}" do
 
     it_should_behave_like "a grok pattern matcher",
+                          "%{ADDRESSPART}",
+                          %w(bounce+user==a==cxxx.com==dxxxx)
+
+    it_should_behave_like "a grok pattern matcher",
                           description,
-                          %w(<user@example.com>),
+                          %w(<user@example.com> <bounce+user==a==cxxx.com==dxxxx@lists.xxxx.org>),
                           %w(not_valid_address)
 
     it_should_behave_like "a grok field matcher",
