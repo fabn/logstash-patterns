@@ -1,0 +1,23 @@
+{
+    "template": "logstash-*",
+    "order": 10,
+    "mappings": {
+        "postfix": {
+            "properties": {
+                "@fields": {
+                    "type": "object",
+                    "dynamic": true,
+                    "path": "full",
+                    "properties": {
+                        "pid": {
+                            "type": "integer"
+                        },
+                        "ip": {
+                            "type": "ip"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
